@@ -7,5 +7,7 @@ namespace TaxManagement.Core
     public interface IRepository
     {
         decimal GetTaxRate(string municipality, DateTime date);
+
+        MuncipalityTax Insert(MuncipalityTax muncipalityTax);
     }
 }

@@ -1,15 +1,11 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TaxManagement.Infrastructure
+namespace TaxManagement.Core
 {
     public class MuncipalityTax
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
         public string Muncipality { get; set; }
@@ -18,10 +14,8 @@ namespace TaxManagement.Infrastructure
 
         public int TaxPriority { get; set; }
 
-        [BsonDateTimeOptions(DateOnly = true)]
         public DateTime StartDate { get; set; }
 
-        [BsonDateTimeOptions(DateOnly = true)]
         public DateTime EndDate { get; set; }
 
         public decimal TaxRate { get; set; }

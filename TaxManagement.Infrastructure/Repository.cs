@@ -4,17 +4,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using TaxManagement.Core;
+using AutoMapper;
 
 namespace TaxManagement.Infrastructure
 {
     public class Repository : IRepository
     {
-        private IMongoCollection<MuncipalityTax> muncipalityTaxes;
-        public Repository(ITaxDBSettings settings)
+        private IMongoCollection<MuncipalityTaxDto> muncipalityTaxes;
+
+        private readonly IMapper mapper;
+
+        public Repository(ITaxDBSettings settings, IMapper mapper)
         {
+            this.mapper = mapper;
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
-            this.muncipalityTaxes = database.GetCollection<MuncipalityTax>(settings.TaxCollectionName);
+            this.muncipalityTaxes = database.GetCollection<MuncipalityTaxDto>(settings.TaxCollectionName);
         }
 
         public decimal GetTaxRate(string municipality, DateTime date)
@@ -26,6 +31,13 @@ namespace TaxManagement.Infrastructure
                 .FirstOrDefault();
 
             return taxRate;
+        }
+
+        public MuncipalityTax Insert(MuncipalityTax muncipalityTax) 
+        {
+            var dto = this.mapper.Map<MuncipalityTaxDto>(muncipalityTax);
+            this.muncipalityTaxes.InsertOne(dto);
+            return muncipalityTax;
         }
     }
 }

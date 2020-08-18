@@ -15,7 +15,13 @@ namespace TaxManagement.Core
 
         public decimal GetTaxRateByMunicipalityDate(string municipality, DateTime date)
         {
-           return this.repository.GetTaxRate(municipality,date);
+            return this.repository.GetTaxRate(municipality, date);
+        }
+
+        public MuncipalityTax Insert(MuncipalityTax muncipalityTax)
+        {
+            var tax = this.Insert(muncipalityTax);
+            return tax;
         }
     }
 }

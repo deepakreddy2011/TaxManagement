@@ -7,5 +7,6 @@ namespace TaxManagement.Core
     public interface ITaxService
     {
         decimal GetTaxRateByMunicipalityDate(string municipality, DateTime date);
+        MuncipalityTax Insert(MuncipalityTax muncipalityTax);
     }
 }

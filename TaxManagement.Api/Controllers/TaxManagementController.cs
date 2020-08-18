@@ -26,5 +26,12 @@ namespace TaxManagement.Api.Controllers
             return this.taxService.GetTaxRateByMunicipalityDate(municipality,date);
         }
 
+        [HttpPost]
+        public MuncipalityTax Insert(MuncipalityTax muncipalityTax) 
+        {
+            var tax = this.Insert(muncipalityTax);
+            return tax;
+        }
+
     }
 }
