@@ -16,6 +16,8 @@ namespace TaxManagement.Infrastructure
 
         public string Duration { get; set; }
 
+        public int TaxPriority { get; set; }
+
         [BsonDateTimeOptions(DateOnly = true)]
         public DateTime StartDate { get; set; }
 

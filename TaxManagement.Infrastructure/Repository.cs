@@ -21,7 +21,7 @@ namespace TaxManagement.Infrastructure
         {
             var taxRate = this.muncipalityTaxes.Find(tax => true).ToList()
                 .Where(tax => date >= tax.StartDate && date <= tax.EndDate)
-                .OrderBy(tax => tax.TaxRate)
+                .OrderBy(tax => tax.TaxPriority)
                 .Select(tax => tax.TaxRate)
                 .FirstOrDefault();
 
