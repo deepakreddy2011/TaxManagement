@@ -11,5 +11,12 @@ namespace TaxManagement.Api.Controllers
     [ApiController]
     public class TaxManagementController : ControllerBase
     {
+        // GET: api/TaxManagement
+        [HttpGet]
+        public decimal GetPercentage(string muncipality, DateTime date)
+        {
+            return 0.1m;
+        }
+
     }
 }
