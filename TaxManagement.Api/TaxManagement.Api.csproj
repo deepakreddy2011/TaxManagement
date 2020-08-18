@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TaxManagement.Core\TaxManagement.Core.csproj" />
+    <ProjectReference Include="..\TaxManagement.Infrastructure\TaxManagement.Infrastructure.csproj" />
   </ItemGroup>
 
 

@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using TaxManagement.Core;
+using TaxManagement.Infrastructure;
 
 namespace TaxManagement.Api
 {
@@ -25,6 +28,15 @@ namespace TaxManagement.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IRepository, Repository>();
+            services.AddTransient<ITaxService, TaxService>();
+
+            services.Configure<TaxDBSettings>(
+            Configuration.GetSection(nameof(TaxDBSettings)));
+
+            services.AddSingleton<ITaxDBSettings>(sp =>
+                sp.GetRequiredService<IOptions<TaxDBSettings>>().Value);
+
             services.AddControllers();
         }
 
