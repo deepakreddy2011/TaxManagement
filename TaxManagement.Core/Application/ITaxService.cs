@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TaxManagement.Core.Application
+namespace TaxManagement.Core
 {
     public interface ITaxService
     {
+        decimal GetTaxRateByMunicipalityDate(string municipality, DateTime date);
     }
 }

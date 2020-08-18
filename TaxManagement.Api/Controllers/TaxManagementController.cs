@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TaxManagement.Core;
 
 namespace TaxManagement.Api.Controllers
 {
@@ -11,11 +12,18 @@ namespace TaxManagement.Api.Controllers
     [ApiController]
     public class TaxManagementController : ControllerBase
     {
+        private ITaxService taxService;
+
+        public TaxManagementController(ITaxService taxService)
+        {
+            this.taxService = taxService;
+        }
+
         // GET: api/TaxManagement
         [HttpGet]
-        public decimal GetPercentage(string muncipality, DateTime date)
+        public decimal GetTaxRateByMunicipalityDate(string municipality, DateTime date)
         {
-            return 0.1m;
+            return this.taxService.GetTaxRateByMunicipalityDate(municipality,date);
         }
 
     }
