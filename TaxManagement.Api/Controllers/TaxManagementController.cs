@@ -47,7 +47,7 @@ namespace TaxManagement.Api.Controllers
             var taxRate = this.taxService.GetTaxRateByMunicipalityDate(municipality, date);
             if (taxRate == default)
             {
-                return this.NotFound();
+                return this.NotFound("No data found");
             }
             else
             {
