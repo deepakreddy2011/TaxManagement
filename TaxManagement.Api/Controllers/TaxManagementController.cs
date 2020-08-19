@@ -65,6 +65,11 @@ namespace TaxManagement.Api.Controllers
             {
                 return this.BadRequest(message);
             }
+            int priority = this.taxService.GetMaxPriority(muncipalityTax.Muncipality);
+            if(priority != default && muncipalityTax.TaxPriority < priority) 
+            {
+                return this.BadRequest($"Tax Priority must be greater than the existing priority for muncipalit {muncipalityTax.Muncipality}. please give higher priority or upload a new file to reset muncipality taxes");
+            }
             var tax = this.taxService.Insert(muncipalityTax);
             return this.CreatedAtAction(nameof(Insert), tax);
         }
@@ -120,6 +125,12 @@ namespace TaxManagement.Api.Controllers
             if (!isRecordExists)
             {
                 return this.NotFound($"Record with Id : {muncipalityTax.Id} is not present");
+            }
+
+            int priority = this.taxService.GetMaxPriority(muncipalityTax.Muncipality);
+            if (priority != default && muncipalityTax.TaxPriority < priority)
+            {
+                return this.BadRequest($"Tax Priority must be greater than the existing priority for muncipality {muncipalityTax.Muncipality}. please give higher priority or upload a new file to reset muncipality taxes");
             }
 
             this.taxService.Update(muncipalityTax);

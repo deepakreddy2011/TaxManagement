@@ -43,5 +43,10 @@ namespace TaxManagement.Core
         {
             this.repository.Update(muncipalityTax);
         }
+
+        public int GetMaxPriority(string muncipality)
+        {
+            return this.repository.GetMaxPriority(muncipality);
+        }
     }
 }
