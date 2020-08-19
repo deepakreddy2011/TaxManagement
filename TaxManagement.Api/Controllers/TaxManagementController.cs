@@ -37,8 +37,13 @@ namespace TaxManagement.Api.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetTaxRateByMunicipalityDate(string municipality, DateTime date)
         {
+            if (string.IsNullOrWhiteSpace(municipality) || date == null || date == DateTime.MinValue || date == DateTime.MaxValue)
+            {
+                return this.BadRequest("Muncipality name or date is not in proper format");
+            }
             var taxRate = this.taxService.GetTaxRateByMunicipalityDate(municipality, date);
             if (taxRate == default)
             {
