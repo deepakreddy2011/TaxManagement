@@ -58,6 +58,14 @@ Tax Management API for applying taxes on a day based on municipality tax policy
               d) Update record
               e) Upload the record using excel file
 
+# Improvements/Enhancements that can made based on business needs
+         1) Introduce security layer like identity server and place it in infrastructure layer
+	 2) Logging in application by creating extentions to logging framerworks like serilog,log4net etc and logging the logs in a desired format by creating a model class 	          for logging alone such that logs can be easily queried from log reporting tools like splunk,elk etc.	 
+	 3) Abstracting the validations in controller by intorducing model validation frameworks like fluent Validation.
+         4) Leverage the resilent frameworks like Polly to mainatain the application resielance and transient fault handling for external world Http based communications.
+	 5) Dockerize the application to deploy it as a container based on the resoucrces consumption required based on the business need   
+	 6) A new installer project like wix project to generate msi and maintain the artifacts in artifact repository like nexus
+	 7) Create CI/CD pipe line 
               
         
           
