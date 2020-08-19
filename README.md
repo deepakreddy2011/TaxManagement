@@ -1,5 +1,5 @@
-# Tax Management
-Tax Management API for applying taxes on a day based on municipality tax policy
+# Tax Management API
+API is used for applying taxes on a day based on municipality tax policy
 
 # Application Setup
    Install Below software’s to run the application in any machine
@@ -42,28 +42,28 @@ Tax Management API for applying taxes on a day based on municipality tax policy
            c) Infrastructure Project
            d) Unit Test Project
         2) Core project will be referenced by other projects, but Core will not have any dependencies apart from framework libraries
-        3) Core is .Net Standard 2.0 project since it can be reused if any other domains depend on this particular Tax Domain. Rest of the project are .Net Core Projects
+        3) Core is .Net Standard 2.0 project since it can be reused if any other domains depend on this Tax Domain. Rest of the project are .Net Core Projects
  
 # Assumptions
-        1) Intrduced a column called as TaxPriority to fetch the correct tax rate if duration is overlapping with daily ,weekly,monthly and yearly duration.
+        1) Introduced a column called as TaxPriority to fetch the correct tax rate if duration is overlapping with daily ,weekly, monthly and yearly duration.
         2) supported formats for file upload is .xlsx,.xlx,.csv which are configured in appsettings.json
         3) Error messages are configured in appsettings.json to eliminate the hardcodings in application code 
 
 #  API Testing 
         1) Swagger is used for API testing instead of consumer service
         2) API has 5 Action methods 
-              a) Get all muncipal taxes
-              b) Get tax rate based on muncipality name and date
+              a) Get all municipal taxes
+              b) Get tax rate based on municipality name and date
               c) Insert new record
               d) Update record
               e) Upload the record using excel file
 
 # Improvements/Enhancements that can made based on business needs
          1) Introduce security layer like identity server and place it in infrastructure layer
-	 2) Logging in application by creating extentions to logging framerworks like serilog,log4net etc and logging the logs in a desired format by creating a model class 	          for logging alone such that logs can be easily queried from log reporting tools like splunk,elk etc.	 
-	 3) Abstracting the validations in controller by intorducing model validation frameworks like fluent Validation.
-         4) Leverage the resilent frameworks like Polly to mainatain the application resielance and transient fault handling for external world Http based communications.
-	 5) Dockerize the application to deploy it as a container based on the resoucrces consumption required based on the business need   
+	 2) Logging in application by creating extensions to logging frameworks like serilog,log4net etc. and logging the logs in a desired format by creating a model class 	          for logging alone such that logs can be easily queried from log reporting tools like Splunk, elk etc.	 
+	 3) Abstracting the validations in controller by introducing model validation frameworks like fluent Validation.
+         4) Leverage the resilient frameworks like Polly to maintain the application resilience and transient fault handling for external world Http based communications.
+	 5) Dockerize the application to deploy it as a container based on the resources consumption required based on the business need   
 	 6) A new installer project like wix project to generate msi and maintain the artifacts in artifact repository like nexus
 	 7) Create CI/CD pipe line 
               
