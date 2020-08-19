@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using ExcelMapper;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace TaxManagement.Infrastructure
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [ExcelIgnore]
         public string Id { get; set; }
 
         public string Muncipality { get; set; }

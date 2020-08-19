@@ -13,6 +13,11 @@ namespace TaxManagement.Core
             this.repository = repository;
         }
 
+        public List<MuncipalityTax> Get() 
+        {
+            return this.repository.Get();
+        }
+
         public decimal GetTaxRateByMunicipalityDate(string municipality, DateTime date)
         {
             return this.repository.GetTaxRate(municipality, date);
@@ -20,8 +25,13 @@ namespace TaxManagement.Core
 
         public MuncipalityTax Insert(MuncipalityTax muncipalityTax)
         {
-            var tax = this.Insert(muncipalityTax);
+            var tax = this.repository.Insert(muncipalityTax);
             return tax;
+        }
+
+        public void ImportTaxData(List<MuncipalityTax> muncipalityTaxes)
+        {
+            this.repository.ImportTaxData(muncipalityTaxes);
         }
     }
 }

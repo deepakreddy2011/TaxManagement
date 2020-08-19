@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -39,8 +40,20 @@ namespace TaxManagement.Api
             services.AddSingleton<ITaxDBSettings>(sp =>
                 sp.GetRequiredService<IOptions<TaxDBSettings>>().Value);
 
-            services.AddControllers();
-            
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        var result = new BadRequestObjectResult(context.ModelState);
+
+                        result.ContentTypes.Add(MediaTypeNames.Application.Json);
+                        result.ContentTypes.Add(MediaTypeNames.Application.Xml);
+
+                        return result;
+                    };
+                }); ;
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -55,9 +68,10 @@ namespace TaxManagement.Api
                         Url = new Uri("https://github.com/deepakreddy2011/TaxManagement"),
                     }
                 });
+
             });
 
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(TaxMapper));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +81,7 @@ namespace TaxManagement.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.ConfigureExceptionHandler();
 
             app.UseHttpsRedirection();
 

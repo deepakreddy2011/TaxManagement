@@ -22,6 +22,14 @@ namespace TaxManagement.Infrastructure
             this.muncipalityTaxes = database.GetCollection<MuncipalityTaxDto>(settings.TaxCollectionName);
         }
 
+        public List<MuncipalityTax> Get()
+        {
+            throw new Exception();
+            var taxDtos = this.muncipalityTaxes.Find(tax => true).ToList();
+            var taxes = this.mapper.Map<List<MuncipalityTax>>(taxDtos);
+            return taxes;
+        }
+
         public decimal GetTaxRate(string municipality, DateTime date)
         {
             var taxRate = this.muncipalityTaxes.Find(tax => true).ToList()
@@ -33,11 +41,19 @@ namespace TaxManagement.Infrastructure
             return taxRate;
         }
 
-        public MuncipalityTax Insert(MuncipalityTax muncipalityTax) 
+        public MuncipalityTax Insert(MuncipalityTax muncipalityTax)
         {
             var dto = this.mapper.Map<MuncipalityTaxDto>(muncipalityTax);
             this.muncipalityTaxes.InsertOne(dto);
             return muncipalityTax;
+        }
+
+        public void ImportTaxData(List<MuncipalityTax> muncipalityTaxes)
+        {
+            var dtos = this.mapper.Map<List<MuncipalityTaxDto>>(muncipalityTaxes);
+            var taxDtos = this.muncipalityTaxes.Find(tax => true).ToList();
+            this.muncipalityTaxes.DeleteMany<MuncipalityTaxDto>(taxDtos => true);
+            this.muncipalityTaxes.InsertMany(dtos);
         }
     }
 }
