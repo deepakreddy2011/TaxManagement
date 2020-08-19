@@ -69,9 +69,9 @@ namespace TaxManagement.Api.Controllers
                 return this.BadRequest(message);
             }
             int priority = this.taxService.GetMaxPriority(muncipalityTax.Muncipality);
-            if (priority != default && muncipalityTax.TaxPriority < priority)
+            if (priority != default && muncipalityTax.TaxPriority <= priority)
             {
-                return this.BadRequest(string.Format(this.configuration.GetSection("NoDataFoundErrorMessage").Value, muncipalityTax.Muncipality));
+                return this.BadRequest(string.Format(this.configuration.GetSection("TaxPriorityErrorMessage").Value, muncipalityTax.Muncipality));
             }
             var tax = this.taxService.Insert(muncipalityTax);
             return this.CreatedAtAction(nameof(Insert), tax);
@@ -83,11 +83,10 @@ namespace TaxManagement.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult PostFile(IFormFile file)
         {
-
             var fileLocalPath = this.SaveFileToLocal(file);
             var extension = Path.GetExtension(fileLocalPath);
             var allowedextensions = this.configuration.GetSection("AllowdFileExtensionstoUpload").Value.Split(',');
-            if (!allowedextensions.Contains(extension))
+            if (!allowedextensions.Any(x => x.Trim().ToLower() == extension.ToLower()))
             {
                 return this.BadRequest(this.configuration.GetSection("FileNotSupportedMessage").Value);
             }
@@ -133,7 +132,7 @@ namespace TaxManagement.Api.Controllers
             int priority = this.taxService.GetMaxPriority(muncipalityTax.Muncipality);
             if (priority != default && muncipalityTax.TaxPriority < priority)
             {
-                return this.BadRequest(string.Format(this.configuration.GetSection("NoDataFoundErrorMessage").Value, muncipalityTax.Muncipality));
+                return this.BadRequest(string.Format(this.configuration.GetSection("TaxPriorityErrorMessage").Value, muncipalityTax.Muncipality));
             }
 
             this.taxService.Update(muncipalityTax);
