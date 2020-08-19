@@ -7,6 +7,7 @@ using AutoMapper;
 using ExcelMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.Annotations;
 using TaxManagement.Core;
 using TaxManagement.Infrastructure;
@@ -19,11 +20,13 @@ namespace TaxManagement.Api.Controllers
     {
         private ITaxService taxService;
         private IMapper mapper;
+        private readonly IConfiguration configuration;
 
-        public TaxManagementController(ITaxService taxService, IMapper mapper)
+        public TaxManagementController(ITaxService taxService, IMapper mapper, IConfiguration configuration)
         {
             this.taxService = taxService;
             this.mapper = mapper;
+            this.configuration = configuration;
         }
 
         [HttpGet]
@@ -42,12 +45,12 @@ namespace TaxManagement.Api.Controllers
         {
             if (string.IsNullOrWhiteSpace(municipality) || date == null || date == DateTime.MinValue || date == DateTime.MaxValue)
             {
-                return this.BadRequest("Muncipality name or date is not in proper format");
+                return this.BadRequest(this.configuration.GetSection("MuncipalityAndDateErrorMessage").Value);
             }
             var taxRate = this.taxService.GetTaxRateByMunicipalityDate(municipality, date);
             if (taxRate == default)
             {
-                return this.NotFound("No data found");
+                return this.NotFound(this.configuration.GetSection("NoDataFoundErrorMessage").Value);
             }
             else
             {
@@ -66,9 +69,9 @@ namespace TaxManagement.Api.Controllers
                 return this.BadRequest(message);
             }
             int priority = this.taxService.GetMaxPriority(muncipalityTax.Muncipality);
-            if(priority != default && muncipalityTax.TaxPriority < priority) 
+            if (priority != default && muncipalityTax.TaxPriority < priority)
             {
-                return this.BadRequest($"Tax Priority must be greater than the existing priority for muncipalit {muncipalityTax.Muncipality}. please give higher priority or upload a new file to reset muncipality taxes");
+                return this.BadRequest(string.Format(this.configuration.GetSection("NoDataFoundErrorMessage").Value, muncipalityTax.Muncipality));
             }
             var tax = this.taxService.Insert(muncipalityTax);
             return this.CreatedAtAction(nameof(Insert), tax);
@@ -83,10 +86,10 @@ namespace TaxManagement.Api.Controllers
 
             var fileLocalPath = this.SaveFileToLocal(file);
             var extension = Path.GetExtension(fileLocalPath);
-            var allowedextensions = new[] { ".xslx", ".xlsb", ".xls", ".csv" };
+            var allowedextensions = this.configuration.GetSection("AllowdFileExtensionstoUpload").Value.Split(',');
             if (!allowedextensions.Contains(extension))
             {
-                return this.BadRequest("File not supported");
+                return this.BadRequest(this.configuration.GetSection("FileNotSupportedMessage").Value);
             }
             var taxesDtos = this.ReadTaxesFromLocalFile(fileLocalPath);
             var taxes = this.mapper.Map<List<MuncipalityTax>>(taxesDtos);
@@ -101,7 +104,7 @@ namespace TaxManagement.Api.Controllers
             });
             if (!isValid)
             {
-                return this.BadRequest("Invalid Data or Data format in the file");
+                return this.BadRequest(this.configuration.GetSection("UploadInvalidDataMessage").Value);
             }
 
 
@@ -124,13 +127,13 @@ namespace TaxManagement.Api.Controllers
             var isRecordExists = tax != null && tax.Id != null;
             if (!isRecordExists)
             {
-                return this.NotFound($"Record with Id : {muncipalityTax.Id} is not present");
+                return this.NotFound(string.Format(this.configuration.GetSection("UpdateRecordNotFoundMessage").Value, muncipalityTax.Id));
             }
 
             int priority = this.taxService.GetMaxPriority(muncipalityTax.Muncipality);
             if (priority != default && muncipalityTax.TaxPriority < priority)
             {
-                return this.BadRequest($"Tax Priority must be greater than the existing priority for muncipality {muncipalityTax.Muncipality}. please give higher priority or upload a new file to reset muncipality taxes");
+                return this.BadRequest(string.Format(this.configuration.GetSection("NoDataFoundErrorMessage").Value, muncipalityTax.Muncipality));
             }
 
             this.taxService.Update(muncipalityTax);
@@ -170,31 +173,31 @@ namespace TaxManagement.Api.Controllers
             var validationMessages = new List<string>();
             if (string.IsNullOrWhiteSpace(muncipalityTax.Muncipality))
             {
-                validationMessages.Add("Municipality is required");
+                validationMessages.Add(this.configuration.GetSection("MuncipalityRequired").Value);
             }
             if (string.IsNullOrWhiteSpace(muncipalityTax.Duration))
             {
-                validationMessages.Add("Duration is required");
+                validationMessages.Add(this.configuration.GetSection("DurationRequired").Value);
             }
             if (muncipalityTax.TaxPriority == default)
             {
-                validationMessages.Add("TaxPriority is required");
+                validationMessages.Add(this.configuration.GetSection("TaxPriorityRequired").Value);
             }
             if (muncipalityTax.StartDate == null || muncipalityTax.StartDate == DateTime.MinValue || muncipalityTax.StartDate == DateTime.MaxValue)
             {
-                validationMessages.Add("StartDate is required");
+                validationMessages.Add(this.configuration.GetSection("StartDateRequired").Value);
             }
             if (muncipalityTax.EndDate == null || muncipalityTax.EndDate == DateTime.MinValue || muncipalityTax.EndDate == DateTime.MaxValue)
             {
-                validationMessages.Add("EndDate is required");
+                validationMessages.Add(this.configuration.GetSection("EndDateRequired").Value);
             }
             if (muncipalityTax.TaxRate == default)
             {
-                validationMessages.Add("TaxRate is required");
+                validationMessages.Add(this.configuration.GetSection("TaxRateRequired").Value);
             }
             if (muncipalityTax.StartDate > muncipalityTax.EndDate)
             {
-                validationMessages.Add("Start Date should be less than End Date");
+                validationMessages.Add(this.configuration.GetSection("StarAndEndDateErrorMessage").Value);
             }
 
             var message = string.Join('\n', validationMessages);
