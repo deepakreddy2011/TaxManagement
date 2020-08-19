@@ -3,20 +3,24 @@ Tax Management API for applying taxes on a day based on municipality tax policy
 
 # Application Setup
    Install Below software’s to run the application in any machine
-    1) .Net Core 3.1
-    2) Visual Studio 2019
-    3) Mongo DB 4.4.0
+     1) .Net Core 3.1
+     2) Visual Studio 2019
+     3) Mongo DB 4.4.0
    
-   after installing the mongo DB open command prompt and run below scripts from location ""
-    1) mongod --dbPath C:/Temp/TaxDB (Path can of your choice)
-    2) Create DB using the Command db.createCollection('MunicipalityTax')
-    3) Insert default Tax data in the collection using the below command
-       db.MuncipalityTax.insertMany([
-          {'Muncipality':'Copenhagen','Duration':'Yearly','TaxPriority':'3','StartDate':new Date("2016-01-01"),'EndDate':new Date('2016-12-31'),'TaxRate':'0.2'},
-					{'Muncipality':'Copenhagen','Duration':'Monthly','TaxPriority':'2','StartDate':new Date("2016-05-01"),'EndDate':new Date('2016-05-31'),'TaxRate':'0.4'},
-					{'Muncipality':'Copenhagen','Duration':'Daily','TaxPriority':'1','StartDate':new Date("2016-01-01"),'EndDate':new Date('2016-01-01'),'TaxRate':'0.1'},
-					{'Muncipality':'Copenhagen','Duration':'Daily','TaxPriority':'1','StartDate':new Date("2016-12-25"),'EndDate':new Date('2016-12-25'),'TaxRate':'0.1'}])
-        
+   after installing the mongo DB open command prompt and run below scripts from location "C:\Program Files\MongoDB\Server\4.4\bin\mongo.exe"
+    
+    
+    
+    
+     1) mongod --dbPath C:/Temp/TaxDB (Path can of your choice)
+     2) Create DB using the Command db.createCollection('MunicipalityTax')
+     3) Insert default Tax data in the collection using the below command
+          db.MuncipalityTax.insertMany([
+	  {'Muncipality':'Copenhagen','Duration':'Yearly','TaxPriority':'3','StartDate':new Date("2016-01-01"),'EndDate':new Date('2016-12-31'),'TaxRate':'0.2'},
+	  {'Muncipality':'Copenhagen','Duration':'Monthly','TaxPriority':'2','StartDate':new Date("2016-05-01"),'EndDate':new Date('2016-05-31'),'TaxRate':'0.4'},
+	  {'Muncipality':'Copenhagen','Duration':'Daily','TaxPriority':'1','StartDate':new Date("2016-01-01"),'EndDate':new Date('2016-01-01'),'TaxRate':'0.1'},
+	  {'Muncipality':'Copenhagen','Duration':'Daily','TaxPriority':'1','StartDate':new Date("2016-12-25"),'EndDate':new Date('2016-12-25'),'TaxRate':'0.1'}])
+					
         *** You can import the tax details using excel after setting up the API successfully. Import process will be explained shortly when we go through API testing
      4) change the mongodb connection string in appsettings.json if you try host the mongDB in cloud or on premises server
 
