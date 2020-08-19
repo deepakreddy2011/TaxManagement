@@ -68,8 +68,8 @@ namespace TaxManagement.Api.Controllers
             {
                 return this.BadRequest(message);
             }
-            int priority = this.taxService.GetMuncipalityByName(muncipalityTax.Muncipality);
-            if (priority != default && muncipalityTax.TaxPriority <= priority)
+            var taxes = this.taxService.GetMuncipalityByName(muncipalityTax.Muncipality);
+            if (taxes.Any() && taxes.Where(x => x.TaxPriority >= muncipalityTax.TaxPriority).Any())
             {
                 return this.BadRequest(string.Format(this.configuration.GetSection("TaxPriorityErrorMessage").Value, muncipalityTax.Muncipality));
             }
