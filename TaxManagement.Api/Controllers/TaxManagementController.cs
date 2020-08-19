@@ -35,26 +35,90 @@ namespace TaxManagement.Api.Controllers
 
         // GET: api/TaxManagement
         [HttpGet]
-        public decimal GetTaxRateByMunicipalityDate(string municipality, DateTime date)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetTaxRateByMunicipalityDate(string municipality, DateTime date)
         {
-            return this.taxService.GetTaxRateByMunicipalityDate(municipality, date);
+            var taxRate = this.taxService.GetTaxRateByMunicipalityDate(municipality, date);
+            if (taxRate == default)
+            {
+                return this.NotFound();
+            }
+            else
+            {
+                return this.Ok(taxRate);
+            }
         }
 
         [HttpPost]
-        public MuncipalityTax Insert(MuncipalityTax muncipalityTax)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Insert(MuncipalityTax muncipalityTax)
         {
+            var message = this.ValidateTaxModel(muncipalityTax);
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                return this.BadRequest(message);
+            }
             var tax = this.taxService.Insert(muncipalityTax);
-            return tax;
+            return this.CreatedAtAction(nameof(Insert), tax);
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Update(MuncipalityTax muncipalityTax)
+        {
+            var message = this.ValidateTaxModel(muncipalityTax);
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                return this.BadRequest(message);
+            }
+            var tax = this.taxService.GetById(muncipalityTax.Id);
+            var isRecordExists = tax != null && tax.Id != null;
+            if (!isRecordExists)
+            {
+                return this.NotFound($"Record with Id : {muncipalityTax.Id} is not present");
+            }
+
+            this.taxService.Update(muncipalityTax);
+            return NoContent();
         }
 
         [HttpPost]
         [Route("upload")]
-        public void PostFile(IFormFile file)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult PostFile(IFormFile file)
         {
+
             var fileLocalPath = this.SaveFileToLocal(file);
+            var extension = Path.GetExtension(fileLocalPath);
+            var allowedextensions = new[] { ".xslx", ".xlsb", ".xls", ".csv" };
+            if (!allowedextensions.Contains(extension))
+            {
+                return this.BadRequest("File not supported");
+            }
             var taxesDtos = this.ReadTaxesFromLocalFile(fileLocalPath);
             var taxes = this.mapper.Map<List<MuncipalityTax>>(taxesDtos);
+            var isValid = true;
+            taxes.ForEach(tax =>
+            {
+                var message = ValidateTaxModel(tax);
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    isValid = false;
+                }
+            });
+            if (!isValid)
+            {
+                return this.BadRequest("Invalid Data or Data format in the file");
+            }
+
+
             this.taxService.ImportTaxData(taxes);
+            return this.NoContent();
         }
         private string SaveFileToLocal(IFormFile file)
         {
@@ -82,6 +146,42 @@ namespace TaxManagement.Api.Controllers
             ExcelSheet sheet = importer.ReadSheet();
             var taxes = sheet.ReadRows<MuncipalityTaxDto>().ToArray().ToList();
             return taxes;
+        }
+
+        private string ValidateTaxModel(MuncipalityTax muncipalityTax)
+        {
+            var validationMessages = new List<string>();
+            if (string.IsNullOrWhiteSpace(muncipalityTax.Muncipality))
+            {
+                validationMessages.Add("Municipality is required");
+            }
+            if (string.IsNullOrWhiteSpace(muncipalityTax.Duration))
+            {
+                validationMessages.Add("Duration is required");
+            }
+            if (muncipalityTax.TaxPriority == default)
+            {
+                validationMessages.Add("TaxPriority is required");
+            }
+            if (muncipalityTax.StartDate == null || muncipalityTax.StartDate == DateTime.MinValue || muncipalityTax.StartDate == DateTime.MaxValue)
+            {
+                validationMessages.Add("StartDate is required");
+            }
+            if (muncipalityTax.EndDate == null || muncipalityTax.EndDate == DateTime.MinValue || muncipalityTax.EndDate == DateTime.MaxValue)
+            {
+                validationMessages.Add("EndDate is required");
+            }
+            if (muncipalityTax.TaxRate == default)
+            {
+                validationMessages.Add("TaxRate is required");
+            }
+            if (muncipalityTax.StartDate > muncipalityTax.EndDate)
+            {
+                validationMessages.Add("Start Date should be less than End Date");
+            }
+
+            var message = string.Join('\n', validationMessages);
+            return message;
         }
     }
 }
