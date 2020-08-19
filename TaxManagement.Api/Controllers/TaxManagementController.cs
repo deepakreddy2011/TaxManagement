@@ -69,28 +69,6 @@ namespace TaxManagement.Api.Controllers
             return this.CreatedAtAction(nameof(Insert), tax);
         }
 
-        [HttpPut]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Update(MuncipalityTax muncipalityTax)
-        {
-            var message = this.ValidateTaxModel(muncipalityTax);
-            if (!string.IsNullOrWhiteSpace(message))
-            {
-                return this.BadRequest(message);
-            }
-            var tax = this.taxService.GetById(muncipalityTax.Id);
-            var isRecordExists = tax != null && tax.Id != null;
-            if (!isRecordExists)
-            {
-                return this.NotFound($"Record with Id : {muncipalityTax.Id} is not present");
-            }
-
-            this.taxService.Update(muncipalityTax);
-            return NoContent();
-        }
-
         [HttpPost]
         [Route("upload")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -125,6 +103,29 @@ namespace TaxManagement.Api.Controllers
             this.taxService.ImportTaxData(taxes);
             return this.NoContent();
         }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult Update(MuncipalityTax muncipalityTax)
+        {
+            var message = this.ValidateTaxModel(muncipalityTax);
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                return this.BadRequest(message);
+            }
+            var tax = this.taxService.GetById(muncipalityTax.Id);
+            var isRecordExists = tax != null && tax.Id != null;
+            if (!isRecordExists)
+            {
+                return this.NotFound($"Record with Id : {muncipalityTax.Id} is not present");
+            }
+
+            this.taxService.Update(muncipalityTax);
+            return NoContent();
+        }
+
         private string SaveFileToLocal(IFormFile file)
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
