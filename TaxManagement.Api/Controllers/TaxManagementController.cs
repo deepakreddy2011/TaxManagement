@@ -68,7 +68,7 @@ namespace TaxManagement.Api.Controllers
             {
                 return this.BadRequest(message);
             }
-            int priority = this.taxService.GetMaxPriority(muncipalityTax.Muncipality);
+            int priority = this.taxService.GetMuncipalityByName(muncipalityTax.Muncipality);
             if (priority != default && muncipalityTax.TaxPriority <= priority)
             {
                 return this.BadRequest(string.Format(this.configuration.GetSection("TaxPriorityErrorMessage").Value, muncipalityTax.Muncipality));
@@ -129,8 +129,9 @@ namespace TaxManagement.Api.Controllers
                 return this.NotFound(string.Format(this.configuration.GetSection("UpdateRecordNotFoundMessage").Value, muncipalityTax.Id));
             }
 
-            int priority = this.taxService.GetMaxPriority(muncipalityTax.Muncipality);
-            if (priority != default && muncipalityTax.TaxPriority < priority)
+            var taxes = this.taxService.GetMuncipalityByName(muncipalityTax.Muncipality);
+            var isLessPriorityAvailable = taxes.Where(x => x.Id != muncipalityTax.Id && muncipalityTax.TaxPriority <= x.TaxPriority).Any();
+            if (taxes.Any() && isLessPriorityAvailable)
             {
                 return this.BadRequest(string.Format(this.configuration.GetSection("TaxPriorityErrorMessage").Value, muncipalityTax.Muncipality));
             }

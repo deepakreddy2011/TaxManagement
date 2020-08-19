@@ -14,6 +14,6 @@ namespace TaxManagement.Core
 
         void ImportTaxData(List<MuncipalityTax> muncipalityTaxes);
         void Update(MuncipalityTax muncipalityTax);
-        int GetMaxPriority(string muncipality);
+        List<MuncipalityTax> GetMuncipalityByName(string muncipality);
     }
 }

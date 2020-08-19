@@ -68,13 +68,12 @@ namespace TaxManagement.Infrastructure
             this.muncipalityTaxes.ReplaceOne<MuncipalityTaxDto>(tax => tax.Id == dto.Id, dto);
         }
 
-        public int GetMaxPriority(string muncipality)
+        public List<MuncipalityTax> GetMuncipalityByName(string muncipality)
         {
-            var priority = this.muncipalityTaxes.Find(tax => tax.Muncipality == muncipality)
-                .ToList()
-                .OrderByDescending(tax => tax.TaxPriority)
-                .Select(tax => tax.TaxPriority).FirstOrDefault();
-            return priority;
+            var dtos = this.muncipalityTaxes.Find(tax => tax.Muncipality == muncipality)
+                .ToList();
+            var taxes = this.mapper.Map<List<MuncipalityTax>>(dtos);
+            return taxes;
         }
     }
 }
