@@ -130,7 +130,7 @@ namespace TaxManagement.Api.Controllers
             }
 
             var taxes = this.taxService.GetMuncipalityByName(muncipalityTax.Muncipality);
-            var isLessPriorityAvailable = taxes.Where(x => x.Id != muncipalityTax.Id && muncipalityTax.TaxPriority <= x.TaxPriority).Any();
+            var isLessPriorityAvailable = taxes.Where(x => x.Id != muncipalityTax.Id && x.Duration != muncipalityTax.Duration && muncipalityTax.TaxPriority <= x.TaxPriority).Any();
             if (taxes.Any() && isLessPriorityAvailable)
             {
                 return this.BadRequest(string.Format(this.configuration.GetSection("TaxPriorityErrorMessage").Value, muncipalityTax.Muncipality));
