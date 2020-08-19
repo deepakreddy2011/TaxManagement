@@ -57,15 +57,21 @@ API is used for applying taxes on a day based on municipality tax policy
               c) Insert new record
               d) Update record
               e) Upload the record using excel file
+	3) Exception are handled globally by building the middleware for exception handling and registering it in Configure method in startUp.cs file
+
+# Unit Testing
+	1) unit test are available for the method GetTaxRateByMunicipalityDate in controller and service layer
+	2) upload , insert and update methods does not have unit tests as those methods are primary dependent on third party tools like mongoDb, ExcelDataReader etc.
 
 # Improvements/Enhancements that can made based on business needs
-         1) Introduce security layer like identity server and place it in infrastructure layer
-	 2) Logging in application by creating extensions to logging frameworks like serilog,log4net etc. and logging the logs in a desired format by creating a model class 	          for logging alone such that logs can be easily queried from log reporting tools like Splunk, elk etc.	 
-	 3) Abstracting the validations in controller by introducing model validation frameworks like fluent Validation.
-         4) Leverage the resilient frameworks like Polly to maintain the application resilience and transient fault handling for external world Http based communications.
-	 5) Dockerize the application to deploy it as a container based on the resources consumption required based on the business need   
-	 6) A new installer project like wix project to generate msi and maintain the artifacts in artifact repository like nexus
-	 7) Create CI/CD pipe line 
+	 1) Createing application flow and architecture diagrams in http://draw.io
+         2) Introduce security layer like identity server and place it in infrastructure layer
+	 3) Logging in application by creating extensions to logging frameworks like serilog,log4net etc. and logging the logs in a desired format by creating a model class 	          for logging alone such that logs can be easily queried from log reporting tools like Splunk, elk etc.	 
+	 4) Abstracting the validations in controller by introducing model validation frameworks like fluent Validation.
+         5) Leverage the resilient frameworks like Polly to maintain the application resilience and transient fault handling for external world Http based communications.
+	 6) Dockerize the application to deploy it as a container based on the resources consumption required based on the business need   
+	 7) A new installer project like wix project to generate msi and maintain the artifacts in artifact repository like nexus
+	 8) Create CI/CD pipe line 
               
         
           
