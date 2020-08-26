@@ -27,13 +27,13 @@ API is used for applying taxes on a day based on municipality tax policy
 
 # Tools
        1) AutoMapper for object to object mapping
-       2) Swagger of API Testing
+       2) Swagger for API Testing
        3) Nunit for Unit Testing
        4) ExcelDataReader for reading data from uploaded file
 
 # Application Architecture
-       1) This API is developed in Clean/Onion Architecture considering microservices way deploying the application 
-       2) Domains has been placed in Core layer and we are using Domain terminology as application is designed in DDD (Domain Driven Design) way 
+       1) This API is developed in Clean/Onion Architecture considering microservices way of deploying the application 
+       2) Domains are placed in Core layer and we are using Domain terminology as application is designed in DDD (Domain Driven Design) way 
         
 #  Application Folder Structure       
        1) Application has 4 projects 
@@ -42,7 +42,7 @@ API is used for applying taxes on a day based on municipality tax policy
            c) Infrastructure Project
            d) Unit Test Project
         2) Core project will be referenced by other projects, but Core will not have any dependencies apart from framework libraries
-        3) Core is .Net Standard 2.0 project since it can be reused if any other domains depend on this Tax Domain. Rest of the project are .Net Core Projects
+        3) Core is .Net Standard 2.0 project since it can be reused if any other domains depend on this Tax Domain. Rest of the projects are .Net Core Projects
  
 # Assumptions
         1) Introduced a column called as TaxPriority to fetch the correct tax rate if duration is overlapping with daily ,weekly, monthly and yearly duration.
@@ -60,13 +60,13 @@ API is used for applying taxes on a day based on municipality tax policy
 	3) Exception are handled globally by building the middleware for exception handling and registering it in Configure method in startUp.cs file
 
 # Unit Testing
-	1) unit test are available for the method GetTaxRateByMunicipalityDate in controller and service layer
-	2) upload , insert and update methods does not have unit tests as those methods are primary dependent on third party tools like mongoDb, ExcelDataReader etc.
+	1) unit tests are available for the method GetTaxRateByMunicipalityDate in controller and service layer
+	2) upload , insert and update methods does not have unit tests as those methods are primarly dependent on third party tools like mongoDb, ExcelDataReader etc.
 
-# Improvements/Enhancements that can made based on business needs
+# Improvements and Enhancements that can made based on business needs
 	 1) Createing application flow and architecture diagrams in http://draw.io
          2) Introduce security layer like identity server and place it in infrastructure layer
-	 3) Logging in application by creating extensions to logging frameworks like serilog,log4net etc. and logging the logs in a desired format by creating a model class 	          for logging alone such that logs can be easily queried from log reporting tools like Splunk, elk etc.	 
+	 3) Logging in application by providing extensions to logging frameworks like serilog,log4net etc. and logging the logs in a desired format by creating a log model                     class such that logs can be easily queried from log reporting tools like Splunk, Elk Stack etc.	 
 	 4) Abstracting the validations in controller by introducing model validation frameworks like fluent Validation.
          5) Leverage the resilient frameworks like Polly to maintain the application resilience and transient fault handling for external world Http based communications.
 	 6) Dockerize the application to deploy it as a container based on the resources consumption required based on the business need   
