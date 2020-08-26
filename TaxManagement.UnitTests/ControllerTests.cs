@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using TaxManagement.Api.Controllers;
 using TaxManagement.Core;
@@ -32,8 +34,8 @@ namespace TaxManagement.UnitTests
 
             var controller = new TaxManagementController(this.mockTaxService.Object, this.mockMapper.Object, this.mockConfiguration.Object);
             var taxRate = controller.GetTaxRateByMunicipalityDate("Copenhagen", new DateTime(2016, 7, 10));
-
-            Assert.AreEqual(taxRate, 0.2m);
+            var okResult = taxRate as OkObjectResult;
+            Assert.AreEqual(okResult.StatusCode, 200);
         }
 
     }
